@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ur" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rashid Kids Studio - Furniture Factory Stock Management System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Reports -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+        .font-urdu { font-family: 'Noto Nastaliq Urdu', serif; }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+
+    <!-- Top Copyright Banner -->
+    <div class="bg-indigo-900 text-white text-xs sm:text-sm py-2 px-4 text-center font-semibold shadow-inner flex flex-wrap justify-center items-center gap-2">
+        <span><i class="fa-solid fa-industry mr-1 text-yellow-400"></i> Furniture Factory Stock Management System</span>
+        <span class="bg-indigo-700 px-2 py-0.5 rounded text-yellow-300">Proprietor: Rashid Khan</span>
+        <span class="bg-indigo-800 px-2 py-0.5 rounded text-amber-200">Rashid Kids Studio</span>
+    </div>
+
+    <!-- Main Header -->
+    <header class="bg-white shadow sticky top-0 z-40 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid fa-boxes-stacked text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold text-gray-900 leading-tight">Factory Stock & Inventory</h1>
+                    <p class="text-xs text-gray-500">Managed by <strong class="text-indigo-600">Rashid Khan (Rashid Kids Studio)</strong></p>
+                </div>
+            </div>
+            
+            <!-- Quick Actions & Admin Lock -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div id="adminBadge" class="hidden items-center bg-green-50 text-green-700 px-3 py-1.5 rounded-lg border border-green-200 text-xs font-semibold">
+                    <i class="fa-solid fa-shield-halved mr-1.5 text-green-600"></i> Admin Unlocked
+                </div>
+                <button onclick="toggleAdminModal()" id="adminToggleBtn" class="bg-gray-900 hover:bg-gray-800 text-white px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-lock" id="lockIcon"></i> <span id="adminBtnText">Admin Login</span>
+                </button>
+                <button onclick="exportDataJSON()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-1.5" title="Backup Data">
+                    <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Backup</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto space-x-4 sm:space-x-8 no-scrollbar">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition border-indigo-600 text-indigo-600 whitespace-nowrap">
+                <i class="fa-solid fa-chart-pie"></i> Dashboard & Alerts
+            </button>
+            <button onclick="switchTab('stockIn')" id="nav-stockIn" class="tab-btn py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                <i class="fa-solid fa-arrow-down text-green-600"></i> Stock Entry (Aamad)
+            </button>
+            <button onclick="switchTab('stockOut')" id="nav-stockOut" class="tab-btn py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                <i class="fa-solid fa-arrow-up text-amber-600"></i> Material Issuance (Kharch)
+            </button>
+            <button onclick="switchTab('inventory')" id="nav-inventory" class="tab-btn py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                <i class="fa-solid fa-warehouse text-blue-600"></i> Items & Inventory
+            </button>
+            <button onclick="switchTab('audit')" id="nav-audit" class="tab-btn py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                <i class="fa-solid fa-clipboard-check text-purple-600"></i> Stock Check (Audit)
+            </button>
+            <button onclick="switchTab('reports')" id="nav-reports" class="tab-btn py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                <i class="fa-solid fa-chart-column text-indigo-600"></i> Weekly/Monthly Reports
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- Low Stock Alert Banner Bar -->
+        <div id="shortageAlertBanner" class="hidden mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl shadow-sm flex items-start justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="text-red-500 text-2xl animate-bounce">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-red-800">Shortage Alert! (Khaas Hoshiyar)</h3>
+                    <p class="text-xs text-red-700 mt-0.5" id="shortageBannerText">Kuch items ka stock kam ho raha hai, bara-e-meherbani foran order dein.</p>
+                </div>
+            </div>
+            <button onclick="switchTab('dashboard')" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium shadow">View Shortage</button>
+        </div>
+
+        <!-- ================= TAB 1: DASHBOARD ================= -->
+        <div id="tab-dashboard-content" class="space-y-6 tab-content">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Items</p>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-1" id="statTotalItems">0</h3>
+                    </div>
+                    <div class="bg-blue-50 text-blue-600 p-3.5 rounded-xl">
+                        <i class="fa-solid fa-boxes-stacked text-xl"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Low Stock Items</p>
+                        <h3 class="text-2xl font-bold text-red-600 mt-1" id="statLowStock">0</h3>
+                    </div>
+                    <div class="bg-red-50 text-red-600 p-3.5 rounded-xl">
+                        <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Stock Entries</p>
+                        <h3 class="text-2xl font-bold text-green-600 mt-1" id="statTotalIn">0</h3>
+                    </div>
+                    <div class="bg-green-50 text-green-600 p-3.5 rounded-xl">
+                        <i class="fa-solid fa-arrow-down text-xl"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Issuances</p>
+                        <h3 class="text-2xl font-bold text-amber-600 mt-1" id="statTotalOut">0</h3>
+                    </div>
+                    <div class="bg-amber-50 text-amber-600 p-3.5 rounded-xl">
+                        <i class="fa-solid fa-arrow-up text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shortage Warning Table -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-5 border-b border-gray-100 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-base font-bold text-gray-900">Items Needing Reorder (Shortage List)</h2>
+                        <p class="text-xs text-gray-500">Items whose current stock is equal to or below minimum threshold limit</p>
+                    </div>
+                    <span class="bg-red-100 text-red-800 text-xs px-2.5 py-1 rounded-full font-semibold" id="shortageCountBadge">0 Items</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 text-gray-600 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
+                                <th class="p-4">Item Name</th>
+                                <th class="p-4">Current Stock</th>
+                                <th class="p-4">Min Limit</th>
+                                <th class="p-4">Unit</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shortageTableBody" class="divide-y divide-gray-100 text-sm">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: STOCK IN (AAMAD) ================= -->
+        <div id="tab-stockIn-content" class="space-y-6 tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Add Stock In Form (Admin Protected or Quick) -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-1 h-fit">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-base font-bold text-gray-900"><i class="fa-solid fa-cart-plus text-green-600 mr-2"></i> New Stock Entry (Aamad)</h2>
+                        <span class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded font-medium">Stock IN</span>
+                    </div>
+                    <form id="stockInForm" onsubmit="handleStockInSubmit(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Select Item *</label>
+                            <select id="inItemSelect" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Quantity Received *</label>
+                            <input type="number" step="any" id="inQty" required placeholder="Misal: 50" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Supplier Name / Party</label>
+                            <input type="text" id="inSupplier" placeholder="Misal: Al-Madina Hardware" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Purchase Price per Unit (Rs)</label>
+                            <input type="number" step="any" id="inPrice" placeholder="Misal: 450" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Date *</label>
+                            <input type="date" id="inDate" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Remarks / Note</label>
+                            <textarea id="inRemarks" rows="2" placeholder="Bill number or description..." class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg text-sm transition shadow-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-plus-circle"></i> Save Stock Entry (Aamad)
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Stock In History Table -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 lg:col-span-2 overflow-hidden flex flex-col">
+                    <div class="p-5 border-b border-gray-100 flex justify-between items-center flex-wrap gap-3">
+                        <div>
+                            <h2 class="text-base font-bold text-gray-900">Stock In History (Aamad Record)</h2>
+                            <p class="text-xs text-gray-500">All recent raw material purchases and receipts</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="searchStockIn" onkeyup="filterStockIn()" placeholder="Search supplier or item..." class="p-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto flex-grow">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-600 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
+                                    <th class="p-3">Date</th>
+                                    <th class="p-3">Item Name</th>
+                                    <th class="p-3">Qty</th>
+                                    <th class="p-3">Supplier</th>
+                                    <th class="p-3">Price (Rs)</th>
+                                    <th class="p-3 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stockInTableBody" class="divide-y divide-gray-100 text-sm">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: STOCK OUT / ISSUANCE (KHARCH) ================= -->
+        <div id="tab-stockOut-content" class="space-y-6 tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Issue Form -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-1 h-fit">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-base font-bold text-gray-900"><i class="fa-solid fa-share-nodes text-amber-600 mr-2"></i> Issue Material (Kharch)</h2>
+                        <span class="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-medium">Stock OUT</span>
+                    </div>
+                    <form id="stockOutForm" onsubmit="handleStockOutSubmit(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Select Item *</label>
+                            <select id="outItemSelect" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Department (Sho'ba) *</label>
+                            <select id="outDepartment" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                                <option value="Poshish">Poshish</option>
+                                <option value="Polish">Polish</option>
+                                <option value="Structure">Structure</option>
+                                <option value="Carpanter">Carpanter</option>
+                                <option value="Office">Office</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Quantity Issued *</label>
+                            <input type="number" step="any" id="outQty" required placeholder="Misal: 10" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Job ID / Order Name / Worker</label>
+                            <input type="text" id="outJob" placeholder="Misal: Bed Set Order #12" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Date *</label>
+                            <input type="date" id="outDate" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Remarks</label>
+                            <textarea id="outRemarks" rows="2" placeholder="Issued to worker name..." class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-2.5 rounded-lg text-sm transition shadow-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Issue Material (Kharch)
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Stock Out History -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 lg:col-span-2 overflow-hidden flex flex-col">
+                    <div class="p-5 border-b border-gray-100 flex justify-between items-center flex-wrap gap-3">
+                        <div>
+                            <h2 class="text-base font-bold text-gray-900">Issuance History (Kharch Record)</h2>
+                            <p class="text-xs text-gray-500">Materials issued to various factory departments</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="searchStockOut" onkeyup="filterStockOut()" placeholder="Search dept or item..." class="p-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto flex-grow">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-600 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
+                                    <th class="p-3">Date</th>
+                                    <th class="p-3">Item Name</th>
+                                    <th class="p-3">Department</th>
+                                    <th class="p-3">Qty</th>
+                                    <th class="p-3">Job / Order</th>
+                                    <th class="p-3 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stockOutTableBody" class="divide-y divide-gray-100 text-sm">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: ITEMS & INVENTORY ================= -->
+        <div id="tab-inventory-content" class="space-y-6 tab-content hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-5 border-b border-gray-100 flex justify-between items-center flex-wrap gap-4">
+                    <div>
+                        <h2 class="text-base font-bold text-gray-900">All Factory Inventory Items</h2>
+                        <p class="text-xs text-gray-500">Manage raw material items, units, and minimum alert thresholds</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="text" id="searchInventory" onkeyup="filterInventory()" placeholder="Search items..." class="p-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <!-- Admin Only Add Item Button -->
+                        <button onclick="openAddItemModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Add New Item
+                        </button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 text-gray-600 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
+                                <th class="p-4">Item Name</th>
+                                <th class="p-4">Unit</th>
+                                <th class="p-4">Current Stock</th>
+                                <th class="p-4">Min Limit (Alert)</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody" class="divide-y divide-gray-100 text-sm">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 5: PHYSICAL STOCK CHECK / AUDIT ================= -->
+        <div id="tab-audit-content" class="space-y-6 tab-content hidden">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+                    <div>
+                        <h2 class="text-base font-bold text-gray-900"><i class="fa-solid fa-clipboard-check text-purple-600 mr-2"></i> Physical Stock Verification (Stock Chaking)</h2>
+                        <p class="text-xs text-gray-500">Compare physical count with system stock and update discrepancies (Admin access required)</p>
+                    </div>
+                    <button onclick="savePhysicalAudit()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Save & Sync Differences
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 text-gray-600 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
+                                <th class="p-3">Item Name</th>
+                                <th class="p-3">Unit</th>
+                                <th class="p-3">System Stock</th>
+                                <th class="p-3">Physical Count (Aapka Ginta Hua)</th>
+                                <th class="p-3">Difference</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditTableBody" class="divide-y divide-gray-100 text-sm">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 6: WEEKLY & MONTHLY REPORTS ================= -->
+        <div id="tab-reports-content" class="space-y-6 tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Department Wise Consumption Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-indigo-600"></i> Department Wise Usage (Sho'ba Wise Kharch)
+                    </h3>
+                    <div class="relative h-72 flex justify-center items-center">
+                        <canvas id="deptChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Monthly Trend Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line text-green-600"></i> Stock In vs Stock Out Summary
+                    </h3>
+                    <div class="relative h-72 flex justify-center items-center">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Department Wise Summary Table -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-5 border-b border-gray-100">
+                    <h3 class="text-base font-bold text-gray-900">Department Consumption Breakdown</h3>
+                    <p class="text-xs text-gray-500">Total material quantity consumed by Poshish, Polish, Structure, Carpanter, and Office</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 text-gray-600 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
+                                <th class="p-4">Department (Sho'ba)</th>
+                                <th class="p-4">Total Issuances Count</th>
+                                <th class="p-4">Summary Note</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deptSummaryTableBody" class="divide-y divide-gray-100 text-sm">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-auto py-4 text-center text-xs text-gray-500">
+        <p>Furniture Factory Stock Management System &copy; 2026 | All Rights Reserved by <strong class="text-indigo-600">Rashid Khan (Rashid Kids Studio)</strong></p>
+    </footer>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Admin Login Modal -->
+    <div id="adminModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 animate-scaleIn">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-900"><i class="fa-solid fa-lock text-indigo-600 mr-2"></i> Admin Authentication</h3>
+                <button onclick="toggleAdminModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-gray-500 mb-4">Enter Admin PIN (Default is <strong class="text-indigo-600">786</strong>) to unlock adding items, editing, and deleting records.</p>
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <input type="password" id="adminPinInput" required placeholder="Enter Secret PIN" class="w-full p-3 border border-gray-300 rounded-xl text-center text-lg tracking-widest focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl text-sm transition shadow">Unlock Admin Mode</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add / Edit Item Modal -->
+    <div id="itemModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="itemModalTitle" class="text-lg font-bold text-gray-900">Add New Inventory Item</h3>
+                <button onclick="closeItemModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="itemForm" onsubmit="handleItemSubmit(event)" class="space-y-4">
+                <input type="hidden" id="editItemOriginalName">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Item Name *</label>
+                    <input type="text" id="modalItemName" required placeholder="Misal: Foam, Keel, Page..." class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Unit of Measurement *</label>
+                    <select id="modalItemUnit" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                        <option value="Pcs">Pcs (Pieces)</option>
+                        <option value="Kg">Kg (Kilograms)</option>
+                        <option value="Sheets">Sheets (Chhad)</option>
+                        <option value="Liters">Liters</option>
+                        <option value="SqFt">SqFt (Square Feet)</option>
+                        <option value="Packet">Packet</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Minimum Alert Limit *</label>
+                    <input type="number" step="any" id="modalItemMin" required placeholder="Misal: 10" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Opening / Current Stock *</label>
+                    <input type="number" step="any" id="modalItemStock" required placeholder="Misal: 100" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeItemModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium shadow">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Default App Data State
+        let isAdminUnlocked = false;
+        let currentEditingItem = null;
+
+        let defaultItems = [
+            { name: "Keel (Nails)", unit: "Kg", min: 15, stock: 45 },
+            { name: "Page (Screws)", unit: "Packet", min: 10, stock: 8 },
+            { name: "Kapra (Fabric)", unit: "SqFt", min: 100, stock: 320 },
+            { name: "Foam", unit: "Sheets", min: 20, stock: 12 },
+            { name: "Polish", unit: "Liters", min: 10, stock: 25 },
+            { name: "Thinar (Thinner)", unit: "Liters", min: 15, stock: 10 },
+            { name: "Hardnar", unit: "Kg", min: 5, stock: 18 },
+            { name: "Wood (Sheesham/Keekar)", unit: "SqFt", min: 200, stock: 150 }
+        ];
+
+        let defaultStockIn = [
+            { id: 1, date: "2026-03-01", itemName: "Kapra (Fabric)", qty: 200, supplier: "Al-Madina Fabrics", price: 120, remarks: "New stock arrival" },
+            { id: 2, date: "2026-03-05", itemName: "Polish", qty: 30, supplier: "National Chemicals", price: 850, remarks: "Monthly quota" }
+        ];
+
+        let defaultStockOut = [
+            { id: 1, date: "2026-03-02", itemName: "Foam", dept: "Poshish", qty: 10, job: "Sofa Set #4", remarks: "Issued to master" },
+            { id: 2, date: "2026-03-06", itemName: "Polish", dept: "Polish", qty: 5, job: "Dining Table #2", remarks: "Gloss finish" }
+        ];
+
+        // LocalStorage Initialization
+        let items = JSON.parse(localStorage.getItem('rk_factory_items')) || defaultItems;
+        let stockIn = JSON.parse(localStorage.getItem('rk_factory_stockIn')) || defaultStockIn;
+        let stockOut = JSON.parse(localStorage.getItem('rk_factory_stockOut')) || defaultStockOut;
+
+        function saveData() {
+            localStorage.setItem('rk_factory_items', JSON.stringify(items));
+            localStorage.setItem('rk_factory_stockIn', JSON.stringify(stockIn));
+            localStorage.setItem('rk_factory_stockOut', JSON.stringify(stockOut));
+        }
+
+        // Initialize App on Load
+        window.onload = function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('inDate').value = today;
+            document.getElementById('outDate').value = today;
+            
+            refreshAll();
+        };
+
+        function refreshAll() {
+            saveData();
+            renderDashboard();
+            renderStockInTable();
+            renderStockOutTable();
+            renderInventoryTable();
+            renderAuditTable();
+            populateDropdowns();
+            renderReports();
+        }
+
+        // Tab Switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('border-indigo-600', 'text-indigo-600');
+                el.classList.add('border-transparent', 'text-gray-500');
+            });
+
+            document.getElementById(`tab-${tabId}-content`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if(activeBtn) {
+                activeBtn.classList.add('border-indigo-600', 'text-indigo-600');
+                activeBtn.classList.remove('border-transparent', 'text-gray-500');
+            }
+        }
+
+        // Populate Dropdowns
+        function populateDropdowns() {
+            let inSelect = document.getElementById('inItemSelect');
+            let outSelect = document.getElementById('outItemSelect');
+            
+            let optionsHTML = '';
+            items.forEach(i => {
+                optionsHTML += `<option value="${i.name}">${i.name} (${i.unit}) - Stock: ${i.stock}</option>`;
+            });
+            inSelect.innerHTML = optionsHTML;
+            outSelect.innerHTML = optionsHTML;
+        }
+
+        // Dashboard & Shortages
+        function renderDashboard() {
+            let lowStockItems = items.filter(i => Number(i.stock) <= Number(i.min));
+
+            document.getElementById('statTotalItems').innerText = items.length;
+            document.getElementById('statLowStock').innerText = lowStockItems.length;
+            document.getElementById('statTotalIn').innerText = stockIn.length;
+            document.getElementById('statTotalOut').innerText = stockOut.length;
+
+            let banner = document.getElementById('shortageAlertBanner');
+            if(lowStockItems.length > 0) {
+                banner.classList.remove('hidden');
+                document.getElementById('shortageBannerText').innerText = `${lowStockItems.length} items are running low or out of stock! Immediate reorder required.`;
+            } else {
+                banner.classList.add('hidden');
+            }
+
+            document.getElementById('shortageCountBadge').innerText = `${lowStockItems.length} Items`;
+
+            let tbody = document.getElementById('shortageTableBody');
+            tbody.innerHTML = '';
+            if(lowStockItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400">All items are at healthy stock levels! No shortages.</td></tr>`;
+                return;
+            }
+
+            lowStockItems.forEach(i => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-4 font-semibold text-gray-900">${i.name}</td>
+                        <td class="p-4 text-red-600 font-bold">${i.stock}</td>
+                        <td class="p-4 text-gray-600">${i.min}</td>
+                        <td class="p-4 text-gray-500">${i.unit}</td>
+                        <td class="p-4"><span class="bg-red-100 text-red-800 text-xs px-2.5 py-1 rounded-full font-semibold">Shortage</span></td>
+                        <td class="p-4 text-right">
+                            <button onclick="quickReorder('${i.name}')" class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium shadow">
+                                <i class="fa-solid fa-cart-plus mr-1"></i> Order
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function quickReorder(itemName) {
+            switchTab('stockIn');
+            document.getElementById('inItemSelect').value = itemName;
+        }
+
+        // Stock In Handler
+        function handleStockInSubmit(e) {
+            e.preventDefault();
+            let itemName = document.getElementById('inItemSelect').value;
+            let qty = parseFloat(document.getElementById('inQty').value);
+            let supplier = document.getElementById('inSupplier').value || 'General Supplier';
+            let price = parseFloat(document.getElementById('inPrice').value) || 0;
+            let date = document.getElementById('inDate').value;
+            let remarks = document.getElementById('inRemarks').value;
+
+            // Update item stock
+            let item = items.find(i => i.name === itemName);
+            if(item) {
+                item.stock = parseFloat(item.stock) + qty;
+            }
+
+            stockIn.unshift({ id: Date.now(), date, itemName, qty, supplier, price, remarks });
+            document.getElementById('stockInForm').reset();
+            document.getElementById('inDate').value = new Date().toISOString().split('T')[0];
+            
+            refreshAll();
+            alert('Stock Entry (Aamad) saved successfully!');
+        }
+
+        function renderStockInTable(filteredList = stockIn) {
+            let tbody = document.getElementById('stockInTableBody');
+            tbody.innerHTML = '';
+            if(filteredList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400">No stock entries found.</td></tr>`;
+                return;
+            }
+            filteredList.forEach(s => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3 text-gray-600 text-xs">${s.date}</td>
+                        <td class="p-3 font-semibold text-gray-900">${s.itemName}</td>
+                        <td class="p-3 text-green-600 font-bold">+${s.qty}</td>
+                        <td class="p-3 text-gray-600">${s.supplier}</td>
+                        <td class="p-3 text-gray-600">Rs ${s.price}</td>
+                        <td class="p-3 text-right">
+                            ${isAdminUnlocked ? `<button onclick="deleteStockIn(${s.id})" class="text-red-500 hover:text-red-700 text-xs"><i class="fa-solid fa-trash"></i></button>` : `<span class="text-xs text-gray-400"><i class="fa-solid fa-lock"></i> Locked</span>`}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterStockIn() {
+            let query = document.getElementById('searchStockIn').value.toLowerCase();
+            let filtered = stockIn.filter(s => s.itemName.toLowerCase().includes(query) || s.supplier.toLowerCase().includes(query));
+            renderStockInTable(filtered);
+        }
+
+        function deleteStockIn(id) {
+            if(!isAdminUnlocked) {
+                alert('Please unlock Admin mode first!');
+                toggleAdminModal();
+                return;
+            }
+            if(confirm('Are you sure you want to delete this stock entry?')) {
+                stockIn = stockIn.filter(s => s.id !== id);
+                refreshAll();
+            }
+        }
+
+        // Stock Out / Issuance Handler
+        function handleStockOutSubmit(e) {
+            e.preventDefault();
+            let itemName = document.getElementById('outItemSelect').value;
+            let dept = document.getElementById('outDepartment').value;
+            let qty = parseFloat(document.getElementById('outQty').value);
+            let job = document.getElementById('outJob').value || 'General Production';
+            let date = document.getElementById('outDate').value;
+            let remarks = document.getElementById('outRemarks').value;
+
+            let item = items.find(i => i.name === itemName);
+            if(item) {
+                if(item.stock < qty) {
+                    if(!confirm(`Warning: Issuing ${qty} ${item.name} exceeds available stock (${item.stock}). Proceed anyway?`)) {
+                        return;
+                    }
+                }
+                item.stock = parseFloat(item.stock) - qty;
+            }
+
+            stockOut.unshift({ id: Date.now(), date, itemName, dept, qty, job, remarks });
+            document.getElementById('stockOutForm').reset();
+            document.getElementById('outDate').value = new Date().toISOString().split('T')[0];
+
+            refreshAll();
+            alert(`Material issued to ${dept} successfully!`);
+        }
+
+        function renderStockOutTable(filteredList = stockOut) {
+            let tbody = document.getElementById('stockOutTableBody');
+            tbody.innerHTML = '';
+            if(filteredList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400">No material issuances recorded.</td></tr>`;
+                return;
+            }
+            filteredList.forEach(s => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3 text-gray-600 text-xs">${s.date}</td>
+                        <td class="p-3 font-semibold text-gray-900">${s.itemName}</td>
+                        <td class="p-3"><span class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full text-xs font-semibold">${s.dept}</span></td>
+                        <td class="p-3 text-amber-600 font-bold">-${s.qty}</td>
+                        <td class="p-3 text-gray-600">${s.job}</td>
+                        <td class="p-3 text-right">
+                            ${isAdminUnlocked ? `<button onclick="deleteStockOut(${s.id})" class="text-red-500 hover:text-red-700 text-xs"><i class="fa-solid fa-trash"></i></button>` : `<span class="text-xs text-gray-400"><i class="fa-solid fa-lock"></i> Locked</span>`}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterStockOut() {
+            let query = document.getElementById('searchStockOut').value.toLowerCase();
+            let filtered = stockOut.filter(s => s.itemName.toLowerCase().includes(query) || s.dept.toLowerCase().includes(query));
+            renderStockOutTable(filtered);
+        }
+
+        function deleteStockOut(id) {
+            if(!isAdminUnlocked) {
+                alert('Please unlock Admin mode first!');
+                toggleAdminModal();
+                return;
+            }
+            if(confirm('Delete this issuance record?')) {
