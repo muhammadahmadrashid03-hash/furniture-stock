@@ -37,12 +37,9 @@ HTML
             </div>
             
             <div class="flex items-center space-x-2 sm:space-x-3">
-                <div id="adminBadge" style="display: none;" class="items-center bg-green-50 text-green-700 px-3 py-1.5 rounded-lg border border-green-200 text-xs font-semibold">
+                <div id="adminBadge" class="flex items-center bg-green-50 text-green-700 px-3 py-1.5 rounded-lg border border-green-200 text-xs font-semibold">
                     <i class="fa-solid fa-shield-halved mr-1.5 text-green-600"></i> Admin Unlocked
                 </div>
-                <button onclick="toggleAdminModal()" id="adminToggleBtn" class="bg-gray-900 hover:bg-gray-800 text-white px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-1.5">
-                    <i class="fa-solid fa-lock" id="lockIcon"></i> <span id="adminBtnText">Admin Login</span>
-                </button>
                 <button onclick="exportDataJSON()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-1.5" title="Backup Data">
                     <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Backup</span>
                 </button>
@@ -144,6 +141,7 @@ HTML
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-gray-50 text-gray-600 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
+                                <th class="p-4">Category</th>
                                 <th class="p-4">Item Name</th>
                                 <th class="p-4">Current Stock</th>
                                 <th class="p-4">Min Limit</th>
@@ -300,10 +298,10 @@ HTML
                 <div class="p-5 border-b border-gray-100 flex justify-between items-center flex-wrap gap-4">
                     <div>
                         <h2 class="text-base font-bold text-gray-900">All Factory Inventory Items</h2>
-                        <p class="text-xs text-gray-500">Manage raw material items, units, and minimum alert thresholds</p>
+                        <p class="text-xs text-gray-500">Manage raw material items, units, categories, and minimum alert thresholds</p>
                     </div>
                     <div class="flex items-center gap-3">
-                        <input type="text" id="searchInventory" onkeyup="filterInventory()" placeholder="Search items..." class="p-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <input type="text" id="searchInventory" onkeyup="filterInventory()" placeholder="Search items or category..." class="p-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
                         <button onclick="openAddItemModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-2">
                             <i class="fa-solid fa-plus"></i> Add New Item
                         </button>
@@ -313,6 +311,7 @@ HTML
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-gray-50 text-gray-600 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
+                                <th class="p-4">Category</th>
                                 <th class="p-4">Item Name</th>
                                 <th class="p-4">Unit</th>
                                 <th class="p-4">Current Stock</th>
@@ -343,6 +342,7 @@ HTML
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-gray-50 text-gray-600 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
+                                <th class="p-3">Category</th>
                                 <th class="p-3">Item Name</th>
                                 <th class="p-3">Unit</th>
                                 <th class="p-3">System Stock</th>
@@ -385,22 +385,6 @@ HTML
     </footer>
 
     <!-- MODALS -->
-    <div id="adminModal" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-gray-900"><i class="fa-solid fa-lock text-indigo-600 mr-2"></i> Admin Authentication</h3>
-                <button onclick="toggleAdminModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <p class="text-xs text-gray-500 mb-4">Enter Admin PIN (Default is <strong class="text-indigo-600">786</strong>) to unlock adding items, editing, and deleting records.</p>
-            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
-                <div>
-                    <input type="password" id="adminPinInput" required placeholder="Enter Secret PIN" class="w-full p-3 border border-gray-300 rounded-xl text-center text-lg tracking-widest focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl text-sm transition shadow">Unlock Admin Mode</button>
-            </form>
-        </div>
-    </div>
-
     <div id="itemModal" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
             <div class="flex justify-between items-center mb-4">
@@ -410,15 +394,26 @@ HTML
             <form id="itemForm" onsubmit="handleItemSubmit(event)" class="space-y-4">
                 <input type="hidden" id="editItemOriginalName">
                 <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Category (Zaili Group) *</label>
+                    <select id="modalItemCategory" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                        <option value="Foam">Foam</option>
+                        <option value="Wood & Timber">Wood & Timber</option>
+                        <option value="Fabric (Kapra)">Fabric (Kapra)</option>
+                        <option value="Hardware (Keel/Page)">Hardware (Keel/Page)</option>
+                        <option value="Chemicals & Polish">Chemicals & Polish</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Item Name *</label>
-                    <input type="text" id="modalItemName" required placeholder="Misal: Foam, Keel, Page..." class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <input type="text" id="modalItemName" required placeholder="Misal: Diamond Foam 4inch" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Unit of Measurement *</label>
                     <select id="modalItemUnit" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                        <option value="Sheets">Sheets (Chhad)</option>
                         <option value="Pcs">Pcs (Pieces)</option>
                         <option value="Kg">Kg (Kilograms)</option>
-                        <option value="Sheets">Sheets (Chhad)</option>
                         <option value="Liters">Liters</option>
                         <option value="SqFt">SqFt (Square Feet)</option>
                         <option value="Packet">Packet</option>
@@ -442,17 +437,17 @@ HTML
 
     <!-- JS Logic -->
     <script>
-        let isAdminUnlocked = true; // Default Unlocked
+        let isAdminUnlocked = true;
 
         let defaultItems = [
-            { name: "Keel (Nails)", unit: "Kg", min: 15, stock: 45 },
-            { name: "Page (Screws)", unit: "Packet", min: 10, stock: 8 },
-            { name: "Kapra (Fabric)", unit: "SqFt", min: 100, stock: 320 },
-            { name: "Foam", unit: "Sheets", min: 20, stock: 12 },
-            { name: "Polish", unit: "Liters", min: 10, stock: 25 },
-            { name: "Thinar (Thinner)", unit: "Liters", min: 15, stock: 10 },
-            { name: "Hardnar", unit: "Kg", min: 5, stock: 18 },
-            { name: "Wood (Sheesham/Keekar)", unit: "SqFt", min: 200, stock: 150 }
+            { category: "Hardware (Keel/Page)", name: "Keel (Nails)", unit: "Kg", min: 15, stock: 45 },
+            { category: "Hardware (Keel/Page)", name: "Page (Screws)", unit: "Packet", min: 10, stock: 8 },
+            { category: "Fabric (Kapra)", name: "Kapra (Fabric)", unit: "SqFt", min: 100, stock: 320 },
+            { category: "Foam", name: "Foam", unit: "Sheets", min: 20, stock: 12 },
+            { category: "Chemicals & Polish", name: "Polish", unit: "Liters", min: 10, stock: 25 },
+            { category: "Chemicals & Polish", name: "Thinar (Thinner)", unit: "Liters", min: 15, stock: 10 },
+            { category: "Chemicals & Polish", name: "Hardnar", unit: "Kg", min: 5, stock: 18 },
+            { category: "Wood & Timber", name: "Wood (Sheesham/Keekar)", unit: "SqFt", min: 200, stock: 150 }
         ];
 
         let defaultStockIn = [
@@ -466,6 +461,9 @@ HTML
         ];
 
         let items = JSON.parse(localStorage.getItem('rk_factory_items')) || defaultItems;
+        // Ensure legacy items have category
+        items = items.map(i => ({ category: i.category || "Other", name: i.name, unit: i.unit, min: i.min, stock: i.stock }));
+
         let stockIn = JSON.parse(localStorage.getItem('rk_factory_stockIn')) || defaultStockIn;
         let stockOut = JSON.parse(localStorage.getItem('rk_factory_stockOut')) || defaultStockOut;
 
@@ -479,13 +477,6 @@ HTML
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('inDate').value = today;
             document.getElementById('outDate').value = today;
-            
-            // Auto set admin badge state
-            document.getElementById('adminBadge').style.display = 'flex';
-            document.getElementById('adminToggleBtn').className = "bg-green-600 hover:bg-green-700 text-white px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-1.5";
-            document.getElementById('lockIcon').className = "fa-solid fa-lock-open";
-            document.getElementById('adminBtnText').innerText = "Admin Lock";
-            
             refreshAll();
         };
 
@@ -520,7 +511,7 @@ HTML
             let outSelect = document.getElementById('outItemSelect');
             let optionsHTML = '';
             items.forEach(i => {
-                optionsHTML += `<option value="${escapeHtml(i.name)}">${i.name} (${i.unit}) - Stock: ${i.stock}</option>`;
+                optionsHTML += `<option value="${escapeHtml(i.name)}">[${i.category}] ${i.name} (${i.unit}) - Stock: ${i.stock}</option>`;
             });
             inSelect.innerHTML = optionsHTML;
             outSelect.innerHTML = optionsHTML;
@@ -545,12 +536,13 @@ HTML
             let tbody = document.getElementById('shortageTableBody');
             tbody.innerHTML = '';
             if(lowStockItems.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400">All items are at healthy stock levels! No shortages.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">All items are at healthy stock levels! No shortages.</td></tr>`;
                 return;
             }
             lowStockItems.forEach(i => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50">
+                        <td class="p-4"><span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full text-xs font-semibold">${i.category}</span></td>
                         <td class="p-4 font-semibold text-gray-900">${i.name}</td>
                         <td class="p-4 text-red-600 font-bold">${i.stock}</td>
                         <td class="p-4 text-gray-600">${i.min}</td>
@@ -695,6 +687,7 @@ HTML
                 let isShort = Number(i.stock) <= Number(i.min);
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50">
+                        <td class="p-4"><span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full text-xs font-semibold">${i.category}</span></td>
                         <td class="p-4 font-semibold text-gray-900">${i.name}</td>
                         <td class="p-4 text-gray-600">${i.unit}</td>
                         <td class="p-4 font-bold ${isShort ? 'text-red-600' : 'text-gray-800'}">${i.stock}</td>
@@ -713,15 +706,16 @@ HTML
 
         function filterInventory() {
             let query = document.getElementById('searchInventory').value.toLowerCase();
-            let filtered = items.filter(i => i.name.toLowerCase().includes(query));
+            let filtered = items.filter(i => i.name.toLowerCase().includes(query) || i.category.toLowerCase().includes(query));
             renderInventoryTable(filtered);
         }
 
         function openAddItemModal() {
             document.getElementById('itemModalTitle').innerText = "Add New Inventory Item";
             document.getElementById('editItemOriginalName').value = "";
+            document.getElementById('modalItemCategory').value = "Foam";
             document.getElementById('modalItemName').value = "";
-            document.getElementById('modalItemUnit').value = "Pcs";
+            document.getElementById('modalItemUnit').value = "Sheets";
             document.getElementById('modalItemMin').value = "10";
             document.getElementById('modalItemStock').value = "0";
             document.getElementById('itemModal').style.display = 'flex';
@@ -732,6 +726,7 @@ HTML
             if(!item) return;
             document.getElementById('itemModalTitle').innerText = "Edit Item Details";
             document.getElementById('editItemOriginalName').value = item.name;
+            document.getElementById('modalItemCategory').value = item.category || "Foam";
             document.getElementById('modalItemName').value = item.name;
             document.getElementById('modalItemUnit').value = item.unit;
             document.getElementById('modalItemMin').value = item.min;
@@ -746,6 +741,7 @@ HTML
         function handleItemSubmit(e) {
             e.preventDefault();
             let originalName = document.getElementById('editItemOriginalName').value;
+            let category = document.getElementById('modalItemCategory').value;
             let name = document.getElementById('modalItemName').value.trim();
             let unit = document.getElementById('modalItemUnit').value;
             let min = parseFloat(document.getElementById('modalItemMin').value);
@@ -754,6 +750,7 @@ HTML
             if(originalName) {
                 let item = items.find(i => i.name === originalName);
                 if(item) {
+                    item.category = category;
                     item.name = name;
                     item.unit = unit;
                     item.min = min;
@@ -764,7 +761,7 @@ HTML
                     alert('Item with this name already exists!');
                     return;
                 }
-                items.push({ name, unit, min, stock });
+                items.push({ category, name, unit, min, stock });
             }
             closeItemModal();
             refreshAll();
@@ -786,6 +783,7 @@ HTML
             items.forEach((i, idx) => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50 audit-row" data-index="${idx}">
+                        <td class="p-3"><span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full text-xs font-semibold">${i.category}</span></td>
                         <td class="p-3 font-semibold text-gray-900">${i.name}</td>
                         <td class="p-3 text-gray-600">${i.unit}</td>
                         <td class="p-3 font-bold text-indigo-600 system-stock">${i.stock}</td>
@@ -820,41 +818,6 @@ HTML
                 });
                 refreshAll();
                 alert('Physical stock audit synced successfully!');
-            }
-        }
-
-        function toggleAdminModal() {
-            let modal = document.getElementById('adminModal');
-            if(isAdminUnlocked) {
-                if(confirm('Lock Admin mode?')) {
-                    isAdminUnlocked = false;
-                    document.getElementById('adminBadge').style.display = 'none';
-                    document.getElementById('adminToggleBtn').className = "bg-gray-900 hover:bg-gray-800 text-white px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-1.5";
-                    document.getElementById('lockIcon').className = "fa-solid fa-lock";
-                    document.getElementById('adminBtnText').innerText = "Admin Login";
-                    refreshAll();
-                }
-            } else {
-                modal.style.display = 'flex';
-                document.getElementById('adminPinInput').value = "";
-                document.getElementById('adminPinInput').focus();
-            }
-        }
-
-        function handleAdminLogin(e) {
-            e.preventDefault();
-            let pin = document.getElementById('adminPinInput').value;
-            if(pin === '786') {
-                isAdminUnlocked = true;
-                document.getElementById('adminModal').style.display = 'none';
-                document.getElementById('adminBadge').style.display = 'flex';
-                document.getElementById('adminToggleBtn').className = "bg-green-600 hover:bg-green-700 text-white px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-1.5";
-                document.getElementById('lockIcon').className = "fa-solid fa-lock-open";
-                document.getElementById('adminBtnText').innerText = "Admin Lock";
-                refreshAll();
-                alert('Admin mode unlocked successfully!');
-            } else {
-                alert('Incorrect PIN!');
             }
         }
 
