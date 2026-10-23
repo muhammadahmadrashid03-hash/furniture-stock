@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rashid Kids Studio - Furniture Factory Stock Management System</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js for Reports -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
@@ -38,9 +35,8 @@
                 </div>
             </div>
             
-            <!-- Quick Actions & Admin Lock -->
             <div class="flex items-center space-x-2 sm:space-x-3">
-                <div id="adminBadge" class="hidden items-center bg-green-50 text-green-700 px-3 py-1.5 rounded-lg border border-green-200 text-xs font-semibold">
+                <div id="adminBadge" style="display: none;" class="items-center bg-green-50 text-green-700 px-3 py-1.5 rounded-lg border border-green-200 text-xs font-semibold">
                     <i class="fa-solid fa-shield-halved mr-1.5 text-green-600"></i> Admin Unlocked
                 </div>
                 <button onclick="toggleAdminModal()" id="adminToggleBtn" class="bg-gray-900 hover:bg-gray-800 text-white px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-1.5">
@@ -94,9 +90,8 @@
             <button onclick="switchTab('dashboard')" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium shadow">View Shortage</button>
         </div>
 
-        <!-- ================= TAB 1: DASHBOARD ================= -->
+        <!-- TAB 1: DASHBOARD -->
         <div id="tab-dashboard-content" class="space-y-6 tab-content">
-            <!-- Stats Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
                     <div>
@@ -136,7 +131,6 @@
                 </div>
             </div>
 
-            <!-- Shortage Warning Table -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="p-5 border-b border-gray-100 flex justify-between items-center">
                     <div>
@@ -157,18 +151,15 @@
                                 <th class="p-4 text-right">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="shortageTableBody" class="divide-y divide-gray-100 text-sm">
-                            <!-- Populated dynamically -->
-                        </tbody>
+                        <tbody id="shortageTableBody" class="divide-y divide-gray-100 text-sm"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- ================= TAB 2: STOCK IN (AAMAD) ================= -->
+        <!-- TAB 2: STOCK IN -->
         <div id="tab-stockIn-content" class="space-y-6 tab-content hidden">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Add Stock In Form (Admin Protected or Quick) -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-1 h-fit">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-base font-bold text-gray-900"><i class="fa-solid fa-cart-plus text-green-600 mr-2"></i> New Stock Entry (Aamad)</h2>
@@ -177,9 +168,7 @@
                     <form id="stockInForm" onsubmit="handleStockInSubmit(event)" class="space-y-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Select Item *</label>
-                            <select id="inItemSelect" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
-                                <!-- Populated dynamically -->
-                            </select>
+                            <select id="inItemSelect" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white"></select>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Quantity Received *</label>
@@ -206,17 +195,13 @@
                         </button>
                     </form>
                 </div>
-
-                <!-- Stock In History Table -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 lg:col-span-2 overflow-hidden flex flex-col">
                     <div class="p-5 border-b border-gray-100 flex justify-between items-center flex-wrap gap-3">
                         <div>
                             <h2 class="text-base font-bold text-gray-900">Stock In History (Aamad Record)</h2>
                             <p class="text-xs text-gray-500">All recent raw material purchases and receipts</p>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <input type="text" id="searchStockIn" onkeyup="filterStockIn()" placeholder="Search supplier or item..." class="p-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        </div>
+                        <input type="text" id="searchStockIn" onkeyup="filterStockIn()" placeholder="Search supplier or item..." class="p-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
                     </div>
                     <div class="overflow-x-auto flex-grow">
                         <table class="w-full text-left border-collapse">
@@ -230,19 +215,16 @@
                                     <th class="p-3 text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="stockInTableBody" class="divide-y divide-gray-100 text-sm">
-                                <!-- Populated dynamically -->
-                            </tbody>
+                            <tbody id="stockInTableBody" class="divide-y divide-gray-100 text-sm"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= TAB 3: STOCK OUT / ISSUANCE (KHARCH) ================= -->
+        <!-- TAB 3: STOCK OUT -->
         <div id="tab-stockOut-content" class="space-y-6 tab-content hidden">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Issue Form -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-1 h-fit">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-base font-bold text-gray-900"><i class="fa-solid fa-share-nodes text-amber-600 mr-2"></i> Issue Material (Kharch)</h2>
@@ -251,9 +233,7 @@
                     <form id="stockOutForm" onsubmit="handleStockOutSubmit(event)" class="space-y-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Select Item *</label>
-                            <select id="outItemSelect" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
-                                <!-- Populated dynamically -->
-                            </select>
+                            <select id="outItemSelect" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white"></select>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Department (Sho'ba) *</label>
@@ -286,17 +266,13 @@
                         </button>
                     </form>
                 </div>
-
-                <!-- Stock Out History -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 lg:col-span-2 overflow-hidden flex flex-col">
                     <div class="p-5 border-b border-gray-100 flex justify-between items-center flex-wrap gap-3">
                         <div>
                             <h2 class="text-base font-bold text-gray-900">Issuance History (Kharch Record)</h2>
                             <p class="text-xs text-gray-500">Materials issued to various factory departments</p>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <input type="text" id="searchStockOut" onkeyup="filterStockOut()" placeholder="Search dept or item..." class="p-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        </div>
+                        <input type="text" id="searchStockOut" onkeyup="filterStockOut()" placeholder="Search dept or item..." class="p-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
                     </div>
                     <div class="overflow-x-auto flex-grow">
                         <table class="w-full text-left border-collapse">
@@ -310,16 +286,14 @@
                                     <th class="p-3 text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="stockOutTableBody" class="divide-y divide-gray-100 text-sm">
-                                <!-- Populated dynamically -->
-                            </tbody>
+                            <tbody id="stockOutTableBody" class="divide-y divide-gray-100 text-sm"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= TAB 4: ITEMS & INVENTORY ================= -->
+        <!-- TAB 4: INVENTORY -->
         <div id="tab-inventory-content" class="space-y-6 tab-content hidden">
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="p-5 border-b border-gray-100 flex justify-between items-center flex-wrap gap-4">
@@ -329,7 +303,6 @@
                     </div>
                     <div class="flex items-center gap-3">
                         <input type="text" id="searchInventory" onkeyup="filterInventory()" placeholder="Search items..." class="p-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        <!-- Admin Only Add Item Button -->
                         <button onclick="openAddItemModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-2">
                             <i class="fa-solid fa-plus"></i> Add New Item
                         </button>
@@ -347,21 +320,19 @@
                                 <th class="p-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="inventoryTableBody" class="divide-y divide-gray-100 text-sm">
-                            <!-- Populated dynamically -->
-                        </tbody>
+                        <tbody id="inventoryTableBody" class="divide-y divide-gray-100 text-sm"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- ================= TAB 5: PHYSICAL STOCK CHECK / AUDIT ================= -->
+        <!-- TAB 5: AUDIT -->
         <div id="tab-audit-content" class="space-y-6 tab-content hidden">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
                     <div>
                         <h2 class="text-base font-bold text-gray-900"><i class="fa-solid fa-clipboard-check text-purple-600 mr-2"></i> Physical Stock Verification (Stock Chaking)</h2>
-                        <p class="text-xs text-gray-500">Compare physical count with system stock and update discrepancies (Admin access required)</p>
+                        <p class="text-xs text-gray-500">Compare physical count with system stock and update discrepancies</p>
                     </div>
                     <button onclick="savePhysicalAudit()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-2">
                         <i class="fa-solid fa-floppy-disk"></i> Save & Sync Differences
@@ -374,32 +345,27 @@
                                 <th class="p-3">Item Name</th>
                                 <th class="p-3">Unit</th>
                                 <th class="p-3">System Stock</th>
-                                <th class="p-3">Physical Count (Aapka Ginta Hua)</th>
+                                <th class="p-3">Physical Count</th>
                                 <th class="p-3">Difference</th>
                             </tr>
                         </thead>
-                        <tbody id="auditTableBody" class="divide-y divide-gray-100 text-sm">
-                            <!-- Populated dynamically -->
-                        </tbody>
+                        <tbody id="auditTableBody" class="divide-y divide-gray-100 text-sm"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- ================= TAB 6: WEEKLY & MONTHLY REPORTS ================= -->
+        <!-- TAB 6: REPORTS -->
         <div id="tab-reports-content" class="space-y-6 tab-content hidden">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Department Wise Consumption Chart -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-indigo-600"></i> Department Wise Usage (Sho'ba Wise Kharch)
+                        <i class="fa-solid fa-chart-pie text-indigo-600"></i> Department Wise Usage
                     </h3>
                     <div class="relative h-72 flex justify-center items-center">
                         <canvas id="deptChart"></canvas>
                     </div>
                 </div>
-
-                <!-- Monthly Trend Chart -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-chart-line text-green-600"></i> Stock In vs Stock Out Summary
@@ -409,30 +375,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Department Wise Summary Table -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-5 border-b border-gray-100">
-                    <h3 class="text-base font-bold text-gray-900">Department Consumption Breakdown</h3>
-                    <p class="text-xs text-gray-500">Total material quantity consumed by Poshish, Polish, Structure, Carpanter, and Office</p>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-50 text-gray-600 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
-                                <th class="p-4">Department (Sho'ba)</th>
-                                <th class="p-4">Total Issuances Count</th>
-                                <th class="p-4">Summary Note</th>
-                            </tr>
-                        </thead>
-                        <tbody id="deptSummaryTableBody" class="divide-y divide-gray-100 text-sm">
-                            <!-- Populated dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
-
     </main>
 
     <!-- Footer -->
@@ -440,11 +383,10 @@
         <p>Furniture Factory Stock Management System &copy; 2026 | All Rights Reserved by <strong class="text-indigo-600">Rashid Khan (Rashid Kids Studio)</strong></p>
     </footer>
 
-    <!-- ================= MODALS ================= -->
-
+    <!-- MODALS -->
     <!-- Admin Login Modal -->
-    <div id="adminModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 animate-scaleIn">
+    <div id="adminModal" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-gray-900"><i class="fa-solid fa-lock text-indigo-600 mr-2"></i> Admin Authentication</h3>
                 <button onclick="toggleAdminModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -460,7 +402,7 @@
     </div>
 
     <!-- Add / Edit Item Modal -->
-    <div id="itemModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div id="itemModal" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 id="itemModalTitle" class="text-lg font-bold text-gray-900">Add New Inventory Item</h3>
@@ -501,7 +443,6 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // Default App Data State
         let isAdminUnlocked = false;
         let currentEditingItem = null;
 
@@ -526,7 +467,6 @@
             { id: 2, date: "2026-03-06", itemName: "Polish", dept: "Polish", qty: 5, job: "Dining Table #2", remarks: "Gloss finish" }
         ];
 
-        // LocalStorage Initialization
         let items = JSON.parse(localStorage.getItem('rk_factory_items')) || defaultItems;
         let stockIn = JSON.parse(localStorage.getItem('rk_factory_stockIn')) || defaultStockIn;
         let stockOut = JSON.parse(localStorage.getItem('rk_factory_stockOut')) || defaultStockOut;
@@ -537,12 +477,10 @@
             localStorage.setItem('rk_factory_stockOut', JSON.stringify(stockOut));
         }
 
-        // Initialize App on Load
         window.onload = function() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('inDate').value = today;
             document.getElementById('outDate').value = today;
-            
             refreshAll();
         };
 
@@ -557,7 +495,6 @@
             renderReports();
         }
 
-        // Tab Switching
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
@@ -573,11 +510,9 @@
             }
         }
 
-        // Populate Dropdowns
         function populateDropdowns() {
             let inSelect = document.getElementById('inItemSelect');
             let outSelect = document.getElementById('outItemSelect');
-            
             let optionsHTML = '';
             items.forEach(i => {
                 optionsHTML += `<option value="${i.name}">${i.name} (${i.unit}) - Stock: ${i.stock}</option>`;
@@ -586,10 +521,8 @@
             outSelect.innerHTML = optionsHTML;
         }
 
-        // Dashboard & Shortages
         function renderDashboard() {
             let lowStockItems = items.filter(i => Number(i.stock) <= Number(i.min));
-
             document.getElementById('statTotalItems').innerText = items.length;
             document.getElementById('statLowStock').innerText = lowStockItems.length;
             document.getElementById('statTotalIn').innerText = stockIn.length;
@@ -602,7 +535,6 @@
             } else {
                 banner.classList.add('hidden');
             }
-
             document.getElementById('shortageCountBadge').innerText = `${lowStockItems.length} Items`;
 
             let tbody = document.getElementById('shortageTableBody');
@@ -611,7 +543,6 @@
                 tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400">All items are at healthy stock levels! No shortages.</td></tr>`;
                 return;
             }
-
             lowStockItems.forEach(i => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50">
@@ -635,7 +566,6 @@
             document.getElementById('inItemSelect').value = itemName;
         }
 
-        // Stock In Handler
         function handleStockInSubmit(e) {
             e.preventDefault();
             let itemName = document.getElementById('inItemSelect').value;
@@ -645,16 +575,13 @@
             let date = document.getElementById('inDate').value;
             let remarks = document.getElementById('inRemarks').value;
 
-            // Update item stock
             let item = items.find(i => i.name === itemName);
             if(item) {
                 item.stock = parseFloat(item.stock) + qty;
             }
-
             stockIn.unshift({ id: Date.now(), date, itemName, qty, supplier, price, remarks });
             document.getElementById('stockInForm').reset();
             document.getElementById('inDate').value = new Date().toISOString().split('T')[0];
-            
             refreshAll();
             alert('Stock Entry (Aamad) saved successfully!');
         }
@@ -700,7 +627,6 @@
             }
         }
 
-        // Stock Out / Issuance Handler
         function handleStockOutSubmit(e) {
             e.preventDefault();
             let itemName = document.getElementById('outItemSelect').value;
@@ -719,11 +645,9 @@
                 }
                 item.stock = parseFloat(item.stock) - qty;
             }
-
             stockOut.unshift({ id: Date.now(), date, itemName, dept, qty, job, remarks });
             document.getElementById('stockOutForm').reset();
             document.getElementById('outDate').value = new Date().toISOString().split('T')[0];
-
             refreshAll();
             alert(`Material issued to ${dept} successfully!`);
         }
@@ -764,3 +688,246 @@
                 return;
             }
             if(confirm('Delete this issuance record?')) {
+                stockOut = stockOut.filter(s => s.id !== id);
+                refreshAll();
+            }
+        }
+
+        function renderInventoryTable(filteredList = items) {
+            let tbody = document.getElementById('inventoryTableBody');
+            tbody.innerHTML = '';
+            filteredList.forEach(i => {
+                let isShort = Number(i.stock) <= Number(i.min);
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-4 font-semibold text-gray-900">${i.name}</td>
+                        <td class="p-4 text-gray-600">${i.unit}</td>
+                        <td class="p-4 font-bold ${isShort ? 'text-red-600' : 'text-gray-800'}">${i.stock}</td>
+                        <td class="p-4 text-gray-600">${i.min}</td>
+                        <td class="p-4">
+                            ${isShort ? '<span class="bg-red-100 text-red-800 text-xs px-2.5 py-1 rounded-full font-semibold">Shortage</span>' : '<span class="bg-green-100 text-green-800 text-xs px-2.5 py-1 rounded-full font-semibold">Normal</span>'}
+                        </td>
+                        <td class="p-4 text-right space-x-2">
+                            <button onclick="openEditItemModal('${i.name}')" class="text-indigo-600 hover:text-indigo-800 text-xs font-semibold"><i class="fa-solid fa-pen"></i> Edit</button>
+                            ${isAdminUnlocked ? `<button onclick="deleteItem('${i.name}')" class="text-red-500 hover:text-red-700 text-xs font-semibold"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterInventory() {
+            let query = document.getElementById('searchInventory').value.toLowerCase();
+            let filtered = items.filter(i => i.name.toLowerCase().includes(query));
+            renderInventoryTable(filtered);
+        }
+
+        function openAddItemModal() {
+            if(!isAdminUnlocked) {
+                alert('Admin PIN required to add new items!');
+                toggleAdminModal();
+                return;
+            }
+            document.getElementById('itemModalTitle').innerText = "Add New Inventory Item";
+            document.getElementById('editItemOriginalName').value = "";
+            document.getElementById('modalItemName').value = "";
+            document.getElementById('modalItemUnit').value = "Pcs";
+            document.getElementById('modalItemMin').value = "10";
+            document.getElementById('modalItemStock').value = "0";
+            document.getElementById('itemModal').style.display = 'flex';
+        }
+
+        function openEditItemModal(name) {
+            let item = items.find(i => i.name === name);
+            if(!item) return;
+            document.getElementById('itemModalTitle').innerText = "Edit Item Details";
+            document.getElementById('editItemOriginalName').value = item.name;
+            document.getElementById('modalItemName').value = item.name;
+            document.getElementById('modalItemUnit').value = item.unit;
+            document.getElementById('modalItemMin').value = item.min;
+            document.getElementById('modalItemStock').value = item.stock;
+            document.getElementById('itemModal').style.display = 'flex';
+        }
+
+        function closeItemModal() {
+            document.getElementById('itemModal').style.display = 'none';
+        }
+
+        function handleItemSubmit(e) {
+            e.preventDefault();
+            let originalName = document.getElementById('editItemOriginalName').value;
+            let name = document.getElementById('modalItemName').value.trim();
+            let unit = document.getElementById('modalItemUnit').value;
+            let min = parseFloat(document.getElementById('modalItemMin').value);
+            let stock = parseFloat(document.getElementById('modalItemStock').value);
+
+            if(originalName) {
+                let item = items.find(i => i.name === originalName);
+                if(item) {
+                    item.name = name;
+                    item.unit = unit;
+                    item.min = min;
+                    item.stock = stock;
+                }
+            } else {
+                if(items.some(i => i.name.toLowerCase() === name.toLowerCase())) {
+                    alert('Item with this name already exists!');
+                    return;
+                }
+                items.push({ name, unit, min, stock });
+            }
+            closeItemModal();
+            refreshAll();
+            alert('Item saved successfully!');
+        }
+
+        function deleteItem(name) {
+            if(!isAdminUnlocked) {
+                alert('Admin PIN required!');
+                toggleAdminModal();
+                return;
+            }
+            if(confirm(`Are you sure you want to delete ${name}?`)) {
+                items = items.filter(i => i.name !== name);
+                refreshAll();
+            }
+        }
+
+        function renderAuditTable() {
+            let tbody = document.getElementById('auditTableBody');
+            tbody.innerHTML = '';
+            items.forEach(i => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 audit-row" data-name="${i.name}">
+                        <td class="p-3 font-semibold text-gray-900">${i.name}</td>
+                        <td class="p-3 text-gray-600">${i.unit}</td>
+                        <td class="p-3 font-bold text-indigo-600 system-stock">${i.stock}</td>
+                        <td class="p-3">
+                            <input type="number" step="any" value="${i.stock}" class="p-1.5 border border-gray-300 rounded text-sm w-32 physical-input focus:ring-1 focus:ring-purple-500 focus:outline-none" oninput="calcAuditDiff(this)">
+                        </td>
+                        <td class="p-3 font-bold diff-val text-gray-500">0</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function calcAuditDiff(input) {
+            let row = input.closest('tr');
+            let sysStock = parseFloat(row.querySelector('.system-stock').innerText);
+            let phyStock = parseFloat(input.value) || 0;
+            let diff = phyStock - sysStock;
+            let diffCell = row.querySelector('.diff-val');
+            diffCell.innerText = diff > 0 ? `+${diff}` : diff;
+            diffCell.className = `p-3 font-bold diff-val ${diff > 0 ? 'text-green-600' : diff < 0 ? 'text-red-600' : 'text-gray-500'}`;
+        }
+
+        function savePhysicalAudit() {
+            if(!isAdminUnlocked) {
+                alert('Admin PIN required to sync physical stock audit!');
+                toggleAdminModal();
+                return;
+            }
+            if(confirm('Are you sure you want to update system stock with physical counts?')) {
+                let rows = document.querySelectorAll('.audit-row');
+                rows.forEach(row => {
+                    let name = row.getAttribute('data-name');
+                    let phyStock = parseFloat(row.querySelector('.physical-input').value) || 0;
+                    let item = items.find(i => i.name === name);
+                    if(item) {
+                        item.stock = phyStock;
+                    }
+                });
+                refreshAll();
+                alert('Physical stock audit synced successfully!');
+            }
+        }
+
+        function toggleAdminModal() {
+            let modal = document.getElementById('adminModal');
+            if(isAdminUnlocked) {
+                if(confirm('Lock Admin mode?')) {
+                    isAdminUnlocked = false;
+                    let badge = document.getElementById('adminBadge');
+                    badge.style.display = 'none';
+                    document.getElementById('adminToggleBtn').className = "bg-gray-900 hover:bg-gray-800 text-white px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-1.5";
+                    document.getElementById('lockIcon').className = "fa-solid fa-lock";
+                    document.getElementById('adminBtnText').innerText = "Admin Login";
+                    refreshAll();
+                }
+            } else {
+                modal.style.display = 'flex';
+                document.getElementById('adminPinInput').value = "";
+                document.getElementById('adminPinInput').focus();
+            }
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            let pin = document.getElementById('adminPinInput').value;
+            if(pin === '786') {
+                isAdminUnlocked = true;
+                document.getElementById('adminModal').style.display = 'none';
+                let badge = document.getElementById('adminBadge');
+                badge.style.display = 'flex';
+                document.getElementById('adminToggleBtn').className = "bg-green-600 hover:bg-green-700 text-white px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-1.5";
+                document.getElementById('lockIcon').className = "fa-solid fa-lock-open";
+                document.getElementById('adminBtnText').innerText = "Admin Lock";
+                refreshAll();
+                alert('Admin mode unlocked successfully for Rashid Khan!');
+            } else {
+                alert('Incorrect PIN! Default PIN is 786.');
+            }
+        }
+
+        let deptChartInstance = null;
+        let trendChartInstance = null;
+
+        function renderReports() {
+            let depts = ['Poshish', 'Polish', 'Structure', 'Carpanter', 'Office'];
+            let deptCounts = depts.map(d => stockOut.filter(s => s.dept === d).reduce((sum, s) => sum + s.qty, 0));
+
+            let ctx1 = document.getElementById('deptChart').getContext('2d');
+            if(deptChartInstance) deptChartInstance.destroy();
+            deptChartInstance = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: depts,
+                    datasets: [{
+                        data: deptCounts,
+                        backgroundColor: ['#6366f1', '#f59e0b', '#10b981', '#ec4899', '#8b5cf6']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            let ctx2 = document.getElementById('trendChart').getContext('2d');
+            if(trendChartInstance) trendChartInstance.destroy();
+            trendChartInstance = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Total Entries (Aamad)', 'Total Issuances (Kharch)'],
+                    datasets: [{
+                        label: 'Quantity',
+                        data: [
+                            stockIn.reduce((sum, s) => sum + s.qty, 0),
+                            stockOut.reduce((sum, s) => sum + s.qty, 0)
+                        ],
+                        backgroundColor: ['#10b981', '#f59e0b']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        function exportDataJSON() {
+            let data = { items, stockIn, stockOut, proprietor: "Rashid Khan (Rashid Kids Studio)" };
+            let blob = new Blob([JSON.stringify(data, null, 2)], { type: 'json' });
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = `Rashid_Kids_Studio_Stock_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+    </script>
+</body>
+</html>
